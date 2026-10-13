@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient: Vibrant Teal to Deep Cyan -->
+    <linearGradient id="medBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <!-- Inner Rim Highlight for depth on dark/light tabs -->
+    <linearGradient id="rimHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Cross Gradient: Pure crisp white with subtle top-to-bottom depth -->
+    <linearGradient id="crossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0fdfa"/>
+    </linearGradient>
+
+    <!-- Cross Elevation Shadow -->
+    <filter id="crossShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#083344" flood-opacity="0.38"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#083344" flood-opacity="0.2"/>
+    </filter>
+
+    <!-- Pulse Line Glow -->
+    <filter id="pulseGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#06b6d4" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base (Curvature matching Apple & Modern Web App icons) -->
+  <rect x="24" y="24" width="464" height="464" rx="108" ry="108" fill="url(#medBg)"/>
+
+  <!-- Subtle Top Light Reflection -->
+  <path d="M 24 132 C 24 72 72 24 132 24 L 380 24 C 440 24 488 72 488 132 C 488 180 380 240 256 240 C 132 240 24 180 24 132 Z" fill="#ffffff" opacity="0.08"/>
+
+  <!-- Rim Highlight Border -->
+  <rect x="25" y="25" width="462" height="462" rx="107" ry="107" fill="none" stroke="url(#rimHighlight)" stroke-width="5"/>
+
+  <!-- Medical Cross with Shadow -->
+  <g filter="url(#crossShadow)">
+    <!-- Vertical Arm -->
+    <rect x="208" y="112" width="96" height="288" rx="24" fill="url(#crossGrad)"/>
+    <!-- Horizontal Arm -->
+    <rect x="112" y="208" width="288" height="96" rx="24" fill="url(#crossGrad)"/>
+  </g>
+
+  <!-- Vital Heartbeat ECG Rhythm integrated across center (Teal/Cyan pulse) -->
+  <path d="M 144 256 L 200 256 L 216 230 L 236 286 L 260 216 L 284 276 L 300 256 L 368 256"
+        fill="none"
+        stroke="#0d9488"
+        stroke-width="12"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0.85"
+        filter="url(#pulseGlow)"/>
+</svg>

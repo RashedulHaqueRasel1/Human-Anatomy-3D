@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw BodyParts3D source data (rebuild with: node scripts/build-models.mjs)
+/raw
