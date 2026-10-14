@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from "three-mesh-bvh";
 import { lookFor, type BodyPart, type SystemId } from "./body";
+import { buildClothing } from "./clothing";
 import { createInstrument, orientInstrument, type Instrument, type InstrumentKind } from "./instruments";
 import {
   createTissueMaterial,
@@ -222,6 +223,8 @@ export class BodyEngine {
   private openTweens = new Map<number, { from: number; to: number; t: number; dur: number }>();
   private lastKidney: THREE.Vector3 | null = null;
   private skinOpacity = 1;
+  /** Trunks / briefs worn by the body; a child of the skin mesh. */
+  private clothing: { mesh: THREE.Mesh; skin: THREE.Mesh } | null = null;
   private sliceOn = false;
   private hovered: string | null = null;
   private selected: string | null = null;
@@ -284,12 +287,22 @@ export class BodyEngine {
         liveShift: new THREE.Vector3(),
         ghosted: false,
       });
+      if (part.system === "integumentary" && /^skin$/i.test(part.name)) this.dress(o, part);
     });
     this.root.add(scene);
     this.applyVisibility();
     this.applyOpacity();
     if (this.live) this.prepareLive();
     if (this.spotlight || this.live?.step?.highlight) this.rebuildHighlight();
+  }
+
+  /** Puts trunks (male) or briefs (female) on the skin so the body is never shown unclothed. */
+  private dress(skin: THREE.Mesh, part: BodyPart) {
+    const mesh = buildClothing(skin, part.id.startsWith("F_") ? "briefs" : "shorts");
+    if (!mesh) return;
+    (mesh.material as THREE.Material).clippingPlanes = [this.plane];
+    skin.add(mesh);
+    this.clothing = { mesh, skin };
   }
 
   /* ---------------- state from React ---------------- */
@@ -860,6 +873,15 @@ export class BodyEngine {
         m.transparent = transparent;
         m.depthWrite = !transparent;
         m.needsUpdate = true;
+      }
+      if (this.clothing && e.mesh === this.clothing.skin) {
+        const c = this.clothing.mesh.material as THREE.MeshStandardMaterial;
+        c.opacity = o;
+        if (c.transparent !== transparent) {
+          c.transparent = transparent;
+          c.depthWrite = !transparent;
+          c.needsUpdate = true;
+        }
       }
     }
     this.applyVisibility();
@@ -1898,6 +1920,11 @@ export class BodyEngine {
     for (const e of this.entries.values()) {
       e.material.dispose();
       e.mesh.geometry.disposeBoundsTree();
+    }
+    if (this.clothing) {
+      this.clothing.mesh.geometry.dispose();
+      (this.clothing.mesh.material as THREE.Material).dispose();
+      this.clothing = null;
     }
   }
 }
